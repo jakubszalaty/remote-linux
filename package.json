@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "ip": "^1.1.4",
+    "shelljs": "^0.7.6",
     "socket.io": "^1.7.2"
   }
 }
