@@ -28,11 +28,11 @@ io.on('connection', function(client){
 
     console.log('client connected',client.id)
 
-    client.on('disconnect', function(){
+    client.on('disconnect', ()=>{
         console.log('client disconnected',client.id)
     })
 
-    client.on('get_commands_list', function(){
+    client.on('get_commands_list', ()=>{
         console.log('get_commands_list')
         client.emit('commands_list', {
             data: [
@@ -47,36 +47,34 @@ io.on('connection', function(client){
         })
     })
 
-    client.on('volumeup', function(){
+    client.on('volumeup', ()=>{
         shelljs.exec('amixer -D pulse sset Master 10%+ >> /dev/null')
     })
 
-    client.on('volumedown', function(){
+    client.on('volumedown', ()=>{
         shelljs.exec('amixer -D pulse sset Master 10%- >> /dev/null')
     })
 
-    client.on('spotify', function(){
+    client.on('spotify', ()=>{
         shelljs.exec('spotify >> /dev/null 2>> /dev/null &')
     })
-    client.on('spotifyPlayPause', function(){
+    client.on('spotifyPlayPause', ()=>{
         shelljs.exec('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause >> /dev/null')
     })
 
-    client.on('spotifyNext', function(){
+    client.on('spotifyNext', ()=>{
         shelljs.exec('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next >> /dev/null')
     })
 
-    client.on('spotifyPrevious', function(){
+    client.on('spotifyPrevious', ()=>{
         shelljs.exec('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous >> /dev/null')
     })
 
-    client.on('spotifyClose', function(){
+    client.on('spotifyClose', ()=>{
         shelljs.exec('kill $(ps aux | grep spotify | awk \'{print $2}\')')
     })
 
-    client.emit('test_connection', {
-        data: 'witaj!'
-    })
+    // client.emit('test_connection', { data: 'witaj!' })
 
 })
 server.listen(1337, IP_ADDRESS)
