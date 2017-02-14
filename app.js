@@ -4,6 +4,9 @@
 const http = require('http')
 const ip = require('ip')
 const shelljs = require('shelljs')
+const robot = require('robotjs')
+
+robot.setMouseDelay(2)
 
 const IP_ADDRESS = ip.address()
 
@@ -36,6 +39,9 @@ io.on('connection', function(client){
         console.log('get_commands_list')
         client.emit('commands_list', {
             data: [
+                'mouseMoveCenter',
+                'mouseMoveZero',
+                'mouseMoveSin',
                 'volumeup',
                 'volumedown',
                 'spotify',
@@ -45,6 +51,27 @@ io.on('connection', function(client){
                 'spotifyClose',
             ]
         })
+    })
+
+    client.on('mouseMoveCenter', () =>{
+        const screenSize = robot.getScreenSize()
+        robot.moveMouse(screenSize.width/2, screenSize.height/2)
+    })
+
+    client.on('mouseMoveZero', () =>{
+        robot.moveMouse(0,0)
+    })
+
+    client.on('mouseMoveSin', () =>{
+        const twoPI = Math.PI * 2.0
+        const screenSize = robot.getScreenSize()
+        const height = (screenSize.height / 2) - 10
+        const width = screenSize.width
+
+        for (let x = 0; x < width; x++) {
+            let y = height * Math.sin((twoPI * x) / width) + height
+            robot.moveMouse(x, y)
+        }
     })
 
     client.on('volumeup', ()=>{
@@ -79,4 +106,4 @@ io.on('connection', function(client){
 })
 server.listen(1337, IP_ADDRESS)
 
-console.log(`Port: ${IP_ADDRESS}`)
+console.log(`Address: ${IP_ADDRESS}:1337`)
