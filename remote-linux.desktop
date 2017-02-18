@@ -2,7 +2,7 @@
 Name=Remote Linux
 GenericName=Remote
 Comment=Control your Linux remotly
-Exec=node /home/kuba/projects/remote-linux/server-side/app.js
+Exec=/home/kuba/projects/remote-linux/server-side/autostart.sh
 Terminal=false
 Type=Application
 Icon=dropbox
