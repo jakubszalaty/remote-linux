@@ -77,20 +77,34 @@ io.on('connection', function (client) {
 
     client.on('spotify', () => {
         spotifyInterval = setInterval(() => {
-            sendSpotifyInfo().then((data) => {
+            getSpotifyInfo().then((data) => {
                 client.emit('spotifyInfo', parseDbusData(data))
             })
-        }, 5000)
+        }, 2000)
 
-        shelljs.exec('spotify&', { silent: true }, () => { })
+        // shelljs.exec('spotify&', { silent: true }, () => { })
+
+        const isSpotify = shelljs.exec('ps aux | grep spotify | awk \'{print $11}\'', { async: true, silent: true })
+
+        isSpotify.stdout.on('data', (data) => {
+            console.log(data)
+            if (data.match('/usr/share/spotify/spotify'))
+                sendSpotifyInfo(client)
+            else{
+                const cmd = shelljs.exec('spotify&', { async: true, silent: true })
+                cmd.stdout.on('data', (data) => {
+                    console.log('spotify started')
+                    sendSpotifyInfo(client)
+                })
+
+            }
+        })
     })
     client.on('spotifyPlayPause', () => {
 
-        const cmd = shelljs.exec(SPOTIFY_PLAYPAUSE , { async: true, silent: true })
+        const cmd = shelljs.exec(SPOTIFY_PLAYPAUSE, { async: true, silent: true })
         cmd.stdout.on('data', (data) => {
-            sendSpotifyInfo().then((data) => {
-                client.emit('spotifyInfo', parseDbusData(data))
-            })
+            sendSpotifyInfo(client)
         })
 
     })
@@ -99,9 +113,7 @@ io.on('connection', function (client) {
 
         const cmd = shelljs.exec(SPOTIFY_NEXT, { async: true, silent: true })
         cmd.stdout.on('data', (data) => {
-            sendSpotifyInfo().then((data) => {
-                client.emit('spotifyInfo', parseDbusData(data))
-            })
+            sendSpotifyInfo(client)
         })
     })
 
@@ -109,9 +121,7 @@ io.on('connection', function (client) {
 
         const cmd = shelljs.exec(SPOTIFY_PREVIOUS, { async: true, silent: true })
         cmd.stdout.on('data', (data) => {
-            sendSpotifyInfo().then((data) => {
-                client.emit('spotifyInfo', parseDbusData(data))
-            })
+            sendSpotifyInfo(client)
         })
 
     })
@@ -132,7 +142,7 @@ server.listen(1337, IP_ADDRESS)
 console.log(`Address: ${IP_ADDRESS}:1337`)
 
 
-function sendSpotifyInfo() {
+function getSpotifyInfo() {
     return new Promise((resolve, reject) => {
         const cmd = shelljs.exec(SPOTIFY_INFO, { async: true, silent: true })
 
@@ -152,4 +162,8 @@ function parseDbusData(data) {
     data = data.replace(/ string /g, '')
 
     return JSON.parse(`{${data.replace(/\n/g, ',')}}`)
+}
+
+function sendSpotifyInfo(client){
+    setTimeout(() => { getSpotifyInfo().then((data) => { client.emit('spotifyInfo', parseDbusData(data)) }) }, 100)
 }
