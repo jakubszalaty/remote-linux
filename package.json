@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "set-autostart": "cp remote-linux.desktop ~/.config/autostart/",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile-indicator": "gcc indicator.c -o indicator `pkg-config --cflags --libs gtk+-2.0 --libs appindicator-0.1`"
   },
   "author": "Kuba Szalaty <nnaisur@gmail.com>",
   "license": "MIT",

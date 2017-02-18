@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Remote Linux
+GenericName=Remote
+Comment=Control your Linux remotly
+Exec=node /home/kuba/projects/remote-linux/server-side/app.js
+Terminal=false
+Type=Application
+Icon=dropbox
+Categories=Network;FileTransfer;
+StartupNotify=false

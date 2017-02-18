@@ -86,6 +86,10 @@ io.on('connection', function(client){
         shelljs.exec('kill $(ps aux | grep spotify | awk \'{print $2}\')')
     })
 
+    client.on('openUrl', (data)=>{
+        shelljs.exec(`google-chrome ${data.url}`)
+    })
+
     // client.emit('test_connection', { data: 'witaj!' })
 
 })
