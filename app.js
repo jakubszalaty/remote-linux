@@ -10,21 +10,6 @@ robot.setMouseDelay(2)
 
 const IP_ADDRESS = ip.address()
 
-// const server = net.createServer((socket) => {
-//     socket.write('Remote Linux\r\n')
-//     // socket.pipe(socket)
-//     socket.on('data', function(data){
-//         const textChunk = data.toString('utf8')
-//         console.log(textChunk)
-//         socket.write(textChunk)
-//     })
-
-//     socket.on('error', function(err) {
-//         console.log(err)
-//     })
-// })
-
-
 const server = http.createServer()
 const io = require('socket.io')(server)
 io.on('connection', function(client){
@@ -75,11 +60,11 @@ io.on('connection', function(client){
     })
 
     client.on('volumeup', ()=>{
-        shelljs.exec('amixer -D pulse sset Master 10%+ >> /dev/null')
+        shelljs.exec('amixer -D pulse sset Master 5%+ >> /dev/null')
     })
 
     client.on('volumedown', ()=>{
-        shelljs.exec('amixer -D pulse sset Master 10%- >> /dev/null')
+        shelljs.exec('amixer -D pulse sset Master 5%- >> /dev/null')
     })
 
     client.on('spotify', ()=>{
