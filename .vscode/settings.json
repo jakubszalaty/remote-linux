@@ -7,5 +7,6 @@
         "**/.DS_Store": true,
         "node_modules/": true,
         "platforms/": true
-    }
+    },
+    "vsicons.presets.angular": false
 }

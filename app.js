@@ -5,11 +5,11 @@ const SPOTIFY_NEXT = 'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spot
 const SPOTIFY_PREVIOUS = 'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous'
 const SPOTIFY_INFO = 'dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:\'org.mpris.MediaPlayer2.Player\' string:\'Metadata\''
 
-// const net = require('net')
 const http = require('http')
 const ip = require('ip')
 const shelljs = require('shelljs')
 const robot = require('robotjs')
+const NodeWebcam = require('node-webcam')
 
 robot.setMouseDelay(2)
 
@@ -17,6 +17,17 @@ const IP_ADDRESS = ip.address()
 
 const server = http.createServer()
 const io = require('socket.io')(server)
+
+const webcamOpt = {
+    width: 1280,
+    height: 720,
+    delay: 0,
+    quality: 100,
+    output: 'jpeg',
+    verbose: false
+}
+
+const Webcam = NodeWebcam.create(webcamOpt)
 
 io.on('connection', function (client) {
 
@@ -32,6 +43,7 @@ io.on('connection', function (client) {
         console.log('get_commands_list')
         client.emit('commands_list', {
             data: [
+                'getShot',
                 'mouseMoveCenter',
                 'mouseMoveZero',
                 'mouseMoveSin',
@@ -43,6 +55,21 @@ io.on('connection', function (client) {
                 'spotifyPrevious',
                 'spotifyClose',
             ]
+        })
+    })
+
+    client.on('getShot', () => {
+
+        Webcam.capture('shot', (err, data) => {
+            if (err) console.error(err)
+            Webcam.getLastShot((err, data) => {
+                if (err) return console.error(err)
+                Webcam.getBase64(0, (err, data) => {
+                    if (err) return console.error(err)
+                    client.emit('sendShot', data)
+                })
+
+            })
         })
     })
 

@@ -13,6 +13,8 @@
   "license": "MIT",
   "dependencies": {
     "ip": "^1.1.4",
+    "lodash": "^4.17.4",
+    "node-webcam": "^0.3.4",
     "robotjs": "^0.4.5",
     "shelljs": "^0.7.6",
     "socket.io": "^1.7.2"
